@@ -28,21 +28,32 @@ jobs:
           bad=$(git ls-files | grep -Ei '(^|/)(\.env(\.[^/]+)?|[^/]+\.(keystore|jks|p12|pem|mobileprovision)|key\.properties)$' | grep -v '\.env\.example$' || true)
           if [ -n "$bad" ]; then echo "Secret-like files tracked:"; echo "$bad"; exit 1; fi
 
+  # hashFiles() is only allowed in step-level conditions (not in a job-level `if`),
+  # so every step is gated individually. Until app/pubspec.yaml exists, all steps skip.
   flutter:
     runs-on: ubuntu-latest
-    if: hashFiles('app/pubspec.yaml') != ''
     defaults:
       run:
         working-directory: app
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - name: Flutter SDK
+        if: hashFiles('app/pubspec.yaml') != ''
+        uses: subosito/flutter-action@v2
         with:
           channel: stable
-      - run: flutter pub get
-      - run: dart format --output=none --set-exit-if-changed .
-      - run: flutter analyze
-      - run: flutter test
+      - name: Dependencies
+        if: hashFiles('app/pubspec.yaml') != ''
+        run: flutter pub get
+      - name: Format check
+        if: hashFiles('app/pubspec.yaml') != ''
+        run: dart format --output=none --set-exit-if-changed .
+      - name: Analyze
+        if: hashFiles('app/pubspec.yaml') != ''
+        run: flutter analyze
+      - name: Tests
+        if: hashFiles('app/pubspec.yaml') != ''
+        run: flutter test
 
   database:
     runs-on: ubuntu-latest
