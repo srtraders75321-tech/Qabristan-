@@ -15,6 +15,9 @@ A private, bilingual (English/Urdu) mobile application for managing family membe
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Decision log |
 | [docs/SETUP_WINDOWS.md](docs/SETUP_WINDOWS.md) | Developer machine and accounts setup |
 | [docs/FINANCE_RULES.md](docs/FINANCE_RULES.md) | Contribution and balance calculation rules |
+| [docs/BURIAL_MODULE.md](docs/BURIAL_MODULE.md) | Burial records backend |
+| [docs/PERMISSIONS.md](docs/PERMISSIONS.md) | Permission keys and what they gate |
+| [docs/REPORTS_AND_RECONCILIATION_REQUIREMENTS.md](docs/REPORTS_AND_RECONCILIATION_REQUIREMENTS.md) | Requirements for reports and ledger reconciliation (not built) |
 | [docs/DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md) | Fields and data handling |
 | [docs/SECURITY_CHECKLIST.md](docs/SECURITY_CHECKLIST.md) | Pre-release security review |
 | [CLAUDE.md](CLAUDE.md) | Rules for Claude Code in this repo |

@@ -15,9 +15,26 @@ Sensitivity levels: **Public** (none stored), **Internal** (committee staff), **
 | rule_set | Contribution rates and parameters, versioned | Internal | Never deleted |
 | ledger_entry | Money movements | Financial | Append-only |
 | receipt | Proof of payment with sequential number | Financial | Append-only |
-| burial_record | One burial, linked to family or standalone | Sensitive | Never deleted |
+| burial_record | One burial, linked to a registered person's family or standalone (non-member) | Sensitive | Never deleted; voided with a reason |
 | committee_user / role_grant | Staff accounts and roles | Internal | Deactivated, not deleted |
+| burial_approval | Committee approval/rejection records for a burial | Sensitive | Append-only |
+| burial_payment | Link from a non-member burial to its ledger entry | Financial | Append-only |
 | audit_log | Record of changes | Internal | Append-only; Super Admin read |
+
+## Burial fields (implemented)
+
+| Field | Meaning | Notes |
+|---|---|---|
+| burial_no | Permanent register number | Never reused |
+| kind | `registered_person` or `non_member` | |
+| person_id | Link to the person record | Registered persons only |
+| family_id, family_no_at_burial | Membership in effect on the date of death | Snapshot; null if none |
+| deceased_name, father_name, date_of_birth, date_of_death | Deceased details | Snapshot; registered persons are changed on the person record |
+| burial_date, grave_reference, notes | Burial details | Grave reference is free text (Q9) |
+| status, void_reason, voided_by, voided_at | Voiding | Records are never deleted |
+| burial_approval: decision, decision_date, approver_names, reference, note, recorded_by | Approval record | No approval rule (D4) |
+
+Not collected: gender, cause of death, national ID numbers (data minimisation; see Q3).
 
 ## Field lists
 

@@ -16,6 +16,8 @@ functions/    Edge Functions (receipt PDF, scheduled reconciliation) - not built
 - `20261105000001_core_schema.sql`: tables, enums, append-only and never-delete guards, audit trigger, default-deny RLS.
 - `20261105000002_functions.sql`: the only way to write data. Family registration and transfers, staff roles, rule versions, payments, verification, reversal, balance.
 
+- `20261105000003_burial.sql`: burial records, approval records, non-member payment links. See `docs/BURIAL_MODULE.md`.
+
 ## How it is protected
 
 - Clients (`authenticated`) have SELECT only, filtered by RLS; `anon` has nothing. Every write is a `SECURITY DEFINER` function that checks `has_permission(...)` first.

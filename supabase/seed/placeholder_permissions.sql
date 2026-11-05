@@ -22,5 +22,16 @@ insert into public.role_permission (role, permission) values
   ('collection_officer', 'family.read'),
   ('collection_officer', 'payment.read'),
   ('collection_officer', 'payment.record'),
-  ('general_member',     'family.read')
+  ('general_member',     'family.read'),
+  -- burial module (also placeholders; who may approve is undecided, D4)
+  ('super_admin',        'burial.read'),
+  ('super_admin',        'burial.write'),
+  ('super_admin',        'burial.approve'),
+  ('super_admin',        'burial.void'),
+  ('committee_admin',    'burial.read'),
+  ('committee_admin',    'burial.write'),
+  ('committee_admin',    'burial.approve'),
+  ('treasurer',          'burial.read'),
+  ('collection_officer', 'burial.read'),
+  ('general_member',     'burial.read')
 on conflict do nothing;
