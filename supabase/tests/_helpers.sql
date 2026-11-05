@@ -64,3 +64,45 @@ begin
   execute 'reset role';
   perform set_config('request.jwt.claim.sub', '', false);
 end $$;
+
+-- ------------------------------------------------------------------------------------------
+-- Deliberate-corruption helper for the reconciliation tests.
+-- Applies p_sql inside a sub-transaction (with user triggers bypassed unless p_replica is
+-- false, so protected tables can be corrupted the way a bug or a database owner could),
+-- then checks that check p_check reports MORE violations than before. The corruption is
+-- always rolled back. Records one result row.
+--   p_user: when given, the count is taken through the permission-checked public API as that
+--           user instead of the internal runner.
+create or replace function t.corrupt(
+  p_sql text, p_check text, p_name text,
+  p_replica boolean default true, p_user uuid default null)
+returns void language plpgsql as $$
+declare base int; after_n int; err text;
+begin
+  select count(*) into base from public._recon_run(p_check);
+  begin
+    if p_replica then perform set_config('session_replication_role', 'replica', true); end if;
+    execute p_sql;
+    perform set_config('session_replication_role', 'origin', true);
+    if p_user is not null then
+      perform set_config('request.jwt.claim.sub', p_user::text, true);
+      execute 'set local role authenticated';
+      select count(*) into after_n from public.reconciliation_violations(p_check);
+    else
+      select count(*) into after_n from public._recon_run(p_check);
+    end if;
+    raise exception 't_rollback';
+  exception when others then
+    get stacked diagnostics err = message_text;
+    if err <> 't_rollback' then
+      insert into t.results values (p_name, false, 'corruption step failed: ' || err);
+      return;
+    end if;
+  end;
+  insert into t.results values (p_name, after_n > base,
+    case when after_n > base then null else format('violations before=%s after=%s', base, after_n) end);
+end $$;
+
+-- Test helpers only. Production functions are NOT executable by clients unless approved
+-- (see migration 20261105000005 and reconciliation check C17).
+grant execute on all functions in schema t to anon, authenticated;

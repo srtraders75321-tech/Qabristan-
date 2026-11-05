@@ -10,7 +10,11 @@ db="kabristan_test_$$"
 psql_admin=(psql -v ON_ERROR_STOP=1 -X -q -d postgres)
 psql_db=(psql -v ON_ERROR_STOP=1 -X -q -d "$db")
 
-cleanup() { "${psql_admin[@]}" -c "drop database if exists \"$db\"" >/dev/null 2>&1 || true; }
+cleanup() {
+  # KEEP_DB=1 leaves the throwaway database in place so a surprising result can be inspected.
+  if [ "${KEEP_DB:-0}" = "1" ]; then echo "KEEP_DB=1: database left in place: $db"; return; fi
+  "${psql_admin[@]}" -c "drop database if exists \"$db\"" >/dev/null 2>&1 || true
+}
 trap cleanup EXIT
 
 "${psql_admin[@]}" -c "create database \"$db\""

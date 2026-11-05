@@ -33,5 +33,8 @@ insert into public.role_permission (role, permission) values
   ('committee_admin',    'burial.approve'),
   ('treasurer',          'burial.read'),
   ('collection_officer', 'burial.read'),
-  ('general_member',     'burial.read')
+  ('general_member',     'burial.read'),
+  -- reconciliation (placeholder; who may run it is undecided, D1)
+  ('super_admin',        'reconcile.run'),
+  ('treasurer',          'reconcile.run')
 on conflict do nothing;

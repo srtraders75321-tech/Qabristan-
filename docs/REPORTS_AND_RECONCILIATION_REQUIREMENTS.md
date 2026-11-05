@@ -1,6 +1,6 @@
 # Financial Reports and Ledger Reconciliation: Requirements
 
-Status: **requirements draft for committee review. Nothing here is built.** Items marked **Proposed** are suggestions; items marked **Open** need a committee decision and must not be assumed. Source of confirmed facts: `PROJECT_CONTEXT.md` (sections 4, 6, 7, 9, 14).
+Status: **requirements draft for committee review.** Section 5 (reconciliation checks) is now implemented: see `RECONCILIATION.md` for what was built, what was changed from this draft (new check C17, C10 reformulated because receipts store no amounts, C12 and C15 deferred), and the assumptions. **Section 4 (reports) is not built.** Items marked **Proposed** are suggestions; items marked **Open** need a committee decision and must not be assumed. Source of confirmed facts: `PROJECT_CONTEXT.md` (sections 4, 6, 7, 9, 14).
 
 ## 1. Goals
 

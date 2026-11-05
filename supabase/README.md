@@ -15,12 +15,13 @@ functions/    Edge Functions (receipt PDF, scheduled reconciliation) - not built
 
 - `20261105000001_core_schema.sql`: tables, enums, append-only and never-delete guards, audit trigger, default-deny RLS.
 - `20261105000002_functions.sql`: the only way to write data. Family registration and transfers, staff roles, rule versions, payments, verification, reversal, balance.
-
 - `20261105000003_burial.sql`: burial records, approval records, non-member payment links. See `docs/BURIAL_MODULE.md`.
+- `20261105000004_reconciliation.sql`: read-only financial reconciliation checks (C1-C17) and the `reconcile.run` entry points. See `docs/RECONCILIATION.md`.
+- `20261105000005_function_privileges.sql`: closes a gap in migrations 1-3 (internal functions were executable by clients). Only functions listed in `_client_functions()` are callable by clients.
 
 ## How it is protected
 
-- Clients (`authenticated`) have SELECT only, filtered by RLS; `anon` has nothing. Every write is a `SECURITY DEFINER` function that checks `has_permission(...)` first.
+- Clients (`authenticated`) have SELECT only, filtered by RLS; `anon` has nothing. Every write is a `SECURITY DEFINER` function that checks `has_permission(...)` first, and clients can execute only the approved functions (reconciliation check C17).
 - `ledger_entry`, `ledger_verification`, `receipt`, `rule_set`, `audit_log` reject UPDATE, DELETE and TRUNCATE for every role.
 - `person`, `family`, `family_member`, `committee_user`, `role_grant` can never be deleted. A family membership is ended by closing it (`valid_to`).
 - A person cannot be in two families at the same time (exclusion constraint).

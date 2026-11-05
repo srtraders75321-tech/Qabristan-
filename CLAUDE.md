@@ -16,6 +16,8 @@ Read first: `docs/PROJECT_CONTEXT.md` (confirmed requirements), `docs/MASTER_PLA
 8. **No secrets in the repo** (keys, keystores, `.env`, signing files).
 9. **Applied migrations are immutable.** Add a new migration instead of editing a merged one.
 10. **Every user-visible string exists in both English and Urdu** (ARB files), and UI is checked in RTL.
+11. **New client-callable function = two steps:** add it to `public._client_functions()` and `grant execute ... to authenticated` in its own migration. Every other function stays private (reconciliation check C17 fails otherwise). Internal `SECURITY DEFINER` helpers are never granted.
+12. **Reconciliation is read-only.** Checks are STABLE functions that report; they never repair. Fix data only through the existing append-only reversal functions.
 
 ## Do not invent business rules
 
@@ -36,6 +38,7 @@ Added as each tool is set up (see `docs/SETUP_WINDOWS.md`):
 - Hook tests: `node --test ".claude/hooks/*.test.mjs"`
 - Flutter: `cd app && flutter pub get && flutter analyze && flutter test`
 - Database tests (any PostgreSQL 16 server, no Supabase needed): `bash supabase/tests/run_local.sh`. It applies all migrations to a throwaway database and runs `supabase/tests/*.test.sql`. Set `PGHOST/PGUSER/PGPASSWORD` if the server is not local.
+- Reconciliation mutation tests (several minutes): `python3 tools/mutation/reconciliation_mutations.py`
 - Local Supabase stack (laptop): `supabase start`, `supabase db reset` (local only)
 
 ## Working agreements

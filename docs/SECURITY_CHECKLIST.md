@@ -13,11 +13,13 @@ A second person reviews this list before any release that touches real data. Mar
 - [ ] Role matrix tests pass for every role (D1 decided)
 - [ ] No table readable by the anonymous role
 - [ ] Money functions check the caller's role inside the function
+- [ ] Only approved functions are executable by clients; none by `anon` or `PUBLIC` (reconciliation check C17 reports no violations)
 
 ## Data integrity
 - [ ] UPDATE/DELETE blocked on ledger, receipt, and audit tables for all roles
 - [ ] Receipt numbers unique and never reused
-- [ ] Nightly reconciliation passes on staging
+- [ ] Reconciliation (`reconciliation_report()`) shows no failing check on staging
+- [ ] Reconciliation mutation tests pass (`tools/mutation/reconciliation_mutations.py`)
 
 ## Secrets and supply chain
 - [ ] No keys or keystores in git history
