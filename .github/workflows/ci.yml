@@ -46,11 +46,24 @@ jobs:
 
   database:
     runs-on: ubuntu-latest
-    if: hashFiles('supabase/config.toml') != ''
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
     steps:
       - uses: actions/checkout@v4
-      - uses: supabase/setup-cli@v1
-        with:
-          version: latest
-      - run: supabase start
-      - run: supabase test db
+      - name: Migrations and database tests
+        run: bash supabase/tests/run_local.sh

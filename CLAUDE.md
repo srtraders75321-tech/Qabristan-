@@ -35,7 +35,8 @@ Added as each tool is set up (see `docs/SETUP_WINDOWS.md`):
 
 - Hook tests: `node --test ".claude/hooks/*.test.mjs"`
 - Flutter: `cd app && flutter pub get && flutter analyze && flutter test`
-- Local database: `supabase start`, `supabase db reset` (local only), `supabase test db`
+- Database tests (any PostgreSQL 16 server, no Supabase needed): `bash supabase/tests/run_local.sh`. It applies all migrations to a throwaway database and runs `supabase/tests/*.test.sql`. Set `PGHOST/PGUSER/PGPASSWORD` if the server is not local.
+- Local Supabase stack (laptop): `supabase start`, `supabase db reset` (local only)
 
 ## Working agreements
 

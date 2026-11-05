@@ -36,7 +36,23 @@ Update this file whenever a decision is made. Add the date and who decided.
 | 2026-11-05 | English and Urdu (RTL) required | Owner brief |
 | 2026-11-05 | Proposed stack Flutter + Supabase/PostgreSQL + Codemagic for iOS (to be validated) | Owner brief |
 
+## Assumptions built into the backend (reversible; none are final)
+
+| Area | Assumption in code | Related |
+|---|---|---|
+| Permissions | `role_permission` table holds the matrix; the seed file is a placeholder | D1 |
+| Grace period | `rule_set.grace_months`; when null, arrears report `rule_not_configured` instead of guessing | D2 |
+| Verification | `rule_set.require_verification_for_coverage` defaults to false; collected and verified are separate records | D5 |
+| Odd amounts | Membership payments must be an exact multiple of the monthly rate; otherwise rejected, never rounded | Q2 |
+| Coverage start | A membership payment starts at the first month not already booked and may not overlap booked months | Proposed |
+| Transfers | Recorded with history; no approval step enforced yet | D6 |
+| Non-member burial | Accepted as a separate category with any positive amount; no fee is set or enforced | D3 |
+| Burial eligibility | Not derived from balance anywhere | PROJECT_CONTEXT 4 |
+| Receipt numbering | Sequential per calendar year in Asia/Karachi; never reused; none issued for reversals | Proposed |
+| First admin | Created manually by the owner with the service role; app cannot create the first Super Admin | Proposed |
+
 ## Phase 0 notes
 
-- Stop hook (run tests before finishing) is deferred until there are tests to run.
+- Stop hook (run tests before finishing) can now be added: database tests exist (`supabase/tests/run_local.sh`).
 - Flutter SDK is not installed in the cloud session. The Flutter project is generated on the developer machine (`app/README.md`).
+- The database tests are plain SQL (pgTAP is not available here). They can be ported to pgTAP later if wanted.
