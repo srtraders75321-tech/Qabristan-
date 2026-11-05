@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  repo-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Hook tests
+        run: node --test ".claude/hooks/*.test.mjs"
+      - name: Required docs exist
+        run: |
+          for f in CLAUDE.md README.md docs/PROJECT_CONTEXT.md docs/MASTER_PLAN.md docs/DECISIONS.md; do
+            test -f "$f" || { echo "Missing $f"; exit 1; }
+          done
+      - name: No secret or signing files committed
+        run: |
+          bad=$(git ls-files | grep -Ei '(^|/)(\.env(\.[^/]+)?|[^/]+\.(keystore|jks|p12|pem|mobileprovision)|key\.properties)$' | grep -v '\.env\.example$' || true)
+          if [ -n "$bad" ]; then echo "Secret-like files tracked:"; echo "$bad"; exit 1; fi
+
+  flutter:
+    runs-on: ubuntu-latest
+    if: hashFiles('app/pubspec.yaml') != ''
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed .
+      - run: flutter analyze
+      - run: flutter test
+
+  database:
+    runs-on: ubuntu-latest
+    if: hashFiles('supabase/config.toml') != ''
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase start
+      - run: supabase test db

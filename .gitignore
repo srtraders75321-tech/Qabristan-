@@ -1,0 +1,54 @@
+# Secrets and signing material
+.env
+.env.*
+!.env.example
+*.keystore
+*.jks
+key.properties
+*.p12
+*.pem
+*.mobileprovision
+google-services.json
+GoogleService-Info.plist
+
+# Real or sensitive data (never commit)
+private/
+tools/migration/input/
+tools/migration/output/
+*.dump
+*.dump.gz
+*.bak
+*.xlsx
+*.xls
+*.csv.real
+
+# Supabase local state
+supabase/.temp/
+supabase/.branches/
+supabase/.env
+
+# Flutter / Dart
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+*.iml
+.idea/
+app/android/.gradle/
+app/android/local.properties
+app/ios/Pods/
+app/ios/.symlinks/
+app/ios/Flutter/ephemeral/
+
+# Node tooling
+node_modules/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+
+# Claude Code local-only settings
+.claude/settings.local.json
